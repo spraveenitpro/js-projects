@@ -1,0 +1,15 @@
+server=1
+regtest=1
+rpcuser=plebdev
+rpcpassword=pass
+#txindex=1
+#daemon=1
+#blocksonly=1 # disable mempool
+#regtest=1
+#rpcconnect=35.209.148.157
+#rpcuser=user_084
+#rpcpassword=KTswV7RORJGN
+#signet=1
+#[signet]
+#signetchallenge=0014e465e43a5e6a013f5c5ec43eae826f57cbb3f83d
+#addnode=35.209.148.157:12738
