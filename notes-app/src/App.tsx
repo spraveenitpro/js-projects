@@ -46,17 +46,19 @@ function App() {
 		</form>
 
 		<div className="notes-grid">
-			<div className="note-item">
-				<div className="notes-header">
-					<button>x</button>
+			{notes.map((note) => (
+				<div className="note-item">
+					<div className="notes-header">
+						<button>x</button>
+					</div>
+					<h2>{note.title}</h2>
+					<p>{note.content}</p>
 				</div>
-				<h2>Note Title</h2>
-				<p>Note contents</p>
-			</div>
+			))}
 		</div>
 	</div>
 
-	);
+
 }
 
 export default App;
