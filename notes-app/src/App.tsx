@@ -2,10 +2,15 @@
 import './App.css';
 import { useState } from 'react';
 
-function App() {
-	return (
+type Note = {
+	id: number;
+	title: string;
+	content: string;
+}
 
-		const [notes, setNotes] = useState<Note[]>([
+function App() {
+
+	const [notes, setNotes] = useState<Note[]>([
 		{
 			id: 1,
 			title: "test note 1",
@@ -38,27 +43,53 @@ function App() {
 		},
 	]);
 
-	<div className="AppContainer">
-		<form className="note-form" >
-			<input placeholder="Title" required />
-			<textarea placeholder="Content" rows={10} required />
-			<button type="submit">Add Note!</button>
-		</form>
+	const handleClick = () => {
+		console.log(notes);
+	}
 
-		<div className="notes-grid">
-			{notes.map((note) => (
-				<div className="note-item">
-					<div className="notes-header">
-						<button>x</button>
+	const handleSubmit = (event: React.FormEvent) => {
+		event.preventDefault();
+		console.log(title, content);
+
+		const newNote: Note = {
+			id: notes.length + 1,
+			title: title,
+			content: content,
+		}
+
+		setNotes([newNote, ...notes]);
+		setTitle("");
+		setContent("");
+	}
+	const [title, setTitle] = useState("");
+	const [content, setContent] = useState("");
+
+
+
+	return (
+
+
+		<div className="app-container">
+			<form className="note-form" onSubmit={(event) => handleSubmit(event)}>
+				<input placeholder="Title" required value={title} onChange={(event) => setTitle(event.target.value)} />
+				<textarea placeholder="Content" rows={10} required value={content} onChange={(event) => setContent(event.target.value)} />
+				<button type="submit">Add Note!</button>
+			</form>
+
+			<div className="notes-grid">
+				{notes.map((note) => (
+					<div className="note-item" key={note.id}>
+						<div className="notes-header">
+							<button onClick={handleClick}>x</button>
+						</div>
+						<h2>{note.title}</h2>
+						<p>{note.content}</p>
 					</div>
-					<h2>{note.title}</h2>
-					<p>{note.content}</p>
-				</div>
-			))}
+				))}
+			</div>
 		</div>
-	</div>
 
-
+	)
 }
 
 export default App;
