@@ -47,9 +47,9 @@ function App() {
 		console.log(notes);
 	}
 
-	const handleSubmit = (event: React.FormEvent) => {
+	const handleAddnote = (event: React.FormEvent) => {
 		event.preventDefault();
-		console.log(title, content);
+
 
 		const newNote: Note = {
 			id: notes.length + 1,
@@ -63,6 +63,44 @@ function App() {
 	}
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState("");
+	const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+
+	const handleNoteClick = (note: Note) => {
+		setSelectedNote(note);
+		setTitle(note.title);
+		setContent(note.content);
+	}
+
+	const handleUpdateNote = (event: React.FormEvent) => {
+		event.preventDefault();
+		if (!selectedNote) {
+			return;
+		}
+
+		const updatedNote: Note = {
+			id: selectedNote.id,
+			title: title,
+			content: content,
+		}
+
+		const updatedNotesList = notes.map((note) =>
+
+			note.id === selectedNote.id ? updatedNote : note
+
+		)
+		setNotes(updatedNotesList);
+		setTitle("");
+		setContent("");
+		setSelectedNote(null);
+
+
+	}
+
+	const handleCancel = () => {
+		setTitle("");
+		setContent("");
+		setSelectedNote(null);
+	}
 
 
 
@@ -70,7 +108,7 @@ function App() {
 
 
 		<div className="app-container">
-			<form className="note-form" onSubmit={(event) => handleSubmit(event)}>
+			<form className="note-form" onSubmit={(event) => handleAddnote(event)}>
 				<input placeholder="Title" required value={title} onChange={(event) => setTitle(event.target.value)} />
 				<textarea placeholder="Content" rows={10} required value={content} onChange={(event) => setContent(event.target.value)} />
 				<button type="submit">Add Note!</button>
@@ -78,7 +116,7 @@ function App() {
 
 			<div className="notes-grid">
 				{notes.map((note) => (
-					<div className="note-item" key={note.id}>
+					<div className="note-item" key={note.id} onClick={() => handleNoteClick(note)}>
 						<div className="notes-header">
 							<button onClick={handleClick}>x</button>
 						</div>
