@@ -108,10 +108,22 @@ function App() {
 
 
 		<div className="app-container">
-			<form className="note-form" onSubmit={(event) => handleAddnote(event)}>
+			<form className="note-form" onSubmit={(event) =>
+				selectedNote ? handleUpdateNote(event) : handleAddnote(event)
+			}>
 				<input placeholder="Title" required value={title} onChange={(event) => setTitle(event.target.value)} />
 				<textarea placeholder="Content" rows={10} required value={content} onChange={(event) => setContent(event.target.value)} />
-				<button type="submit">Add Note!</button>
+
+				{selectedNote ? (
+					<div className="edit-buttons">
+						<button type="submit">Save</button>
+						<button onClick={handleCancel}>Cancel</button>
+					</div>
+				) : (
+					<button type="submit">Add Note!</button>
+
+				)}
+
 			</form>
 
 			<div className="notes-grid">
