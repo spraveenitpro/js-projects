@@ -4,7 +4,7 @@ export const dummyData: Todo[] = [
 	{
 		id: 1,
 		title: 'Learn React 🚀',
-		completed: true
+		completed: false
 	},
 	{
 		id: 2,
@@ -14,6 +14,6 @@ export const dummyData: Todo[] = [
 	{
 		id: 3,
 		title: 'Learn Tailwind CSS 💄',
-		completed: false
+		completed: true
 	}
 ];

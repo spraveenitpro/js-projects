@@ -1,7 +1,6 @@
-import { dummyData } from './data/todos';
-import { Todo } from './types/todos';
-import TodoItem from './components/TodoItem';
 import { useState } from 'react';
+import TodoItem from './components/TodoItem';
+import { dummyData } from './data/todos';
 
 function App() {
 	const [todos, setTodos] = useState(dummyData);
@@ -14,9 +13,13 @@ function App() {
 	// }
 
 	function setTodoCompleted(id: number, completed: boolean) {
-		setTodos((prevTodos) =>
-			prevTodos.map((todo) => (todo.id === id ? { ...todo, completed } : todo))
-		);
+		//alert(`Todo with ${id} is now ${completed ? 'completed' : 'not completed'}`);
+		setTodos((prevTodos) => prevTodos.map(todo => (
+			todo.id === id ? { ...todo, completed } : todo
+		))
+
+
+		)
 	}
 
 	return (
@@ -24,11 +27,11 @@ function App() {
 			<h1 className='font-bold text-3xl text-center'>Your Todos</h1>
 			<div className='max-w-lg mx-auto bg-slate-100 rounded-md p-5 '>
 				<div className='space-y-2' >
-					{dummyData.map((todo: Todo) => (
-						<TodoItem todo={todo} onCompletedChange={setTodoCompleted} key={todo.id} />
-						// <p key={todo.id} className='text-lg'>
-						// 	{todo.title}
-						// </p>
+					{todos.map((todo) => (
+						<TodoItem todo={todo}
+							key={todo.id}
+							onCompletedChange={setTodoCompleted}
+						/>
 
 					))}
 				</div>
