@@ -5,12 +5,6 @@ import { dummyData } from './data/todos';
 function App() {
 	const [todos, setTodos] = useState(dummyData);
 
-	// function setTodoCompleted(id: number, completed: boolean) {
-	// 	//alert(`Todo with ${id} is now ${completed ? 'completed' : 'not completed'}`);
-	// 	setTodos((prevTodos) =>
-	// 		prevTodos.map((todo) => (todo.id === id ? { ...todo, completed } : todo))
-	// 	);
-	// }
 
 	function setTodoCompleted(id: number, completed: boolean) {
 		//alert(`Todo with ${id} is now ${completed ? 'completed' : 'not completed'}`);
