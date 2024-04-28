@@ -2,11 +2,11 @@
 import { useState } from 'react';
 
 interface AddTodoFormProps {
-	
+	onSubmit: (title: string) => void;
 }
 
 
-export default function AddTodoForm() {
+export default function AddTodoForm({ onSubmit }: AddTodoFormProps) {
 
 	const [input, setInput] = useState('');
 
@@ -14,6 +14,9 @@ export default function AddTodoForm() {
 		e.preventDefault();
 		console.log("Form Submitted", input);
 		if (!input.trim()) return;
+
+		onSubmit(input);
+		setInput("");
 
 	}
 	return (
