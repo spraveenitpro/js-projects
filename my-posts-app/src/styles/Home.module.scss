@@ -1,0 +1,78 @@
+$primary-color: #000000;
+
+
+.container {
+	min-height: 80vh;
+	padding: 0 0.5rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+  }
+
+.h1 {
+	color: $primary-color;
+	font-weight: 700;
+	width: 100%;
+
+  }
+
+
+.title {
+	margin:0;
+	line-height: 1.15;
+	font-size: 2.5em;
+	text-align: center;
+  }
+
+.main {
+	padding: 5rem 0;
+}
+
+
+.post {
+	list-style: none;
+	padding: 0;
+	margin: 5em 0;
+	text-align: left;
+
+	li {
+		margin-bottom: 3em;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+
+	}
+
+	p{
+		&:first-child {
+			margin-top: 0;
+		}
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
+
+.postsContent {
+	font-size: 34px;
+	line-height: 43px;
+	margin-bottom: 0.5em;
+}
+
+
+.postsDate {
+	font-weight: 600;
+	font-size: 26px;
+	line-height: 33px;
+}
+
+
+
+
+
+
+
+
