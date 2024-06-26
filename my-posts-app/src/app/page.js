@@ -17,7 +17,7 @@ export default function Home() {
                         <p className={styles.postsContent}>
                             I’m Working in figma designing a new website that shows all my tweets!.
                         </p>
-                        <p>
+                        <p className={styles.postsDate}>
                             2021-09-28
                         </p>
                     </li>
@@ -25,7 +25,7 @@ export default function Home() {
                         <p className={styles.postsContent}>
                             I’m Working in figma designing a new website that shows all my tweets!.
                         </p>
-                        <p>
+                        <p className={styles.postsDate}>
                             2021-09-28
                         </p>
                     </li>
@@ -33,7 +33,7 @@ export default function Home() {
                         <p className={styles.postsContent}>
                             I’m Working in figma designing a new website that shows all my tweets!.
                         </p>
-                        <p>
+                        <p className={styles.postsDate}>
                             2021-09-28
                         </p>
                     </li>
