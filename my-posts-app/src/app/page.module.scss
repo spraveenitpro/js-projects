@@ -17,7 +17,7 @@
     .title {
     margin: 0;
     line-height: 1.15;
-    font-size: 2.5em;
+    font-size: 3em;
     text-align: center;
     }
 
@@ -35,32 +35,15 @@
             }
         }
 
-        li {
+        & > li {
             margin-bottom: 3em;
-
             &:last-child {
                 margin-bottom: 0;
             }
+
+
         }
 
     }
 
 
-    .postsContent {
-        font-family: Source Sans Pro, sans-serif;
-        font-style: normal;
-        font-weight: normal;
-        font-size: 34px;
-        line-height: 43px;
-        margin-bottom: 0.5em;
-    }
-
-    .postsDate {
-        font-size: 1.2em;
-        font-family: Source Sans Pro, sans-serif;
-        font-style: normal;
-        font-weight: 600;
-        font-size: 26px;
-        line-height: 33px;
-
-    }
