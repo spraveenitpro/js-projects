@@ -6,27 +6,23 @@ const PostForm = () => {
 		const newDate = new Date().toLocaleDateString();
 
 		const data = {
-			"records": [
-				{
-					"fields": {
-						"Content": content,
-						"date": newDate
-					}
-				}
-			]
-		}
+			content: content,
+			date: newDate
+		};
+		console.log('Data that is being posted: 🚀');
+		console.log(data);
 
 		try {
-			const response = await fetch(`https://api.airtable.com/v0/${process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID}/Posts`, {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/posts`, {
 				method: 'POST',
 				headers: {
-					'Authorization': `Bearer ${process.env.NEXT_PUBLIC_AIRTABLE_API_KEY}`,
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify(data)
 			});
 			const result = await response.json();
 			console.log('Success:', result);
+
 
 		} catch (error) {
 			console.error('Error:', error);

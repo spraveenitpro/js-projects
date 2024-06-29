@@ -7,6 +7,7 @@ import PostForm from "../components/PostForm";
 import React from "react";
 
 
+
 export default function Home({ posts }) {
     const [myPosts, setMyPosts] = React.useState([]);
 
@@ -16,7 +17,7 @@ export default function Home({ posts }) {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/posts`);
             const posts = await response.json();
 
-            console.log(posts);
+            //console.log(posts);
             setMyPosts(posts)
         }
         fetchPosts();
@@ -45,10 +46,7 @@ export default function Home({ posts }) {
                             const { Content, date, id } = post;
                             return (
                                 <li key={id}>
-                                    <Posts content={Content} date={new Intl.DateTimeFormat('en-US', {
-                                        dateStyle: 'short',
-                                        timeStyle: 'short'
-                                    }).format(new Date(date))} />
+                                    <Posts content={Content} date={date} />
                                 </li>
                             )
                         })
