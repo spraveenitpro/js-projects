@@ -1,9 +1,27 @@
+'use client';
 import styles from "./page.module.scss";
 import Head from "next/head";
 import Posts from "../components/Post";
 import Bio from "../components/Bio/Bio";
+import React from "react";
 
-export default function Home() {
+
+
+export default function Home({ posts }) {
+    const [myPosts, setMyPosts] = React.useState([]);
+
+    React.useEffect(() => {
+        async function fetchPosts() {
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/posts`);
+            const posts = await response.json();
+
+            console.log(posts);
+            setMyPosts(posts)
+        }
+        fetchPosts();
+    }, []);
+    //console.log(myPosts)
     return (
         <div className={styles.container}>
             <Head>
@@ -21,15 +39,21 @@ export default function Home() {
                 />
 
                 <ul className={styles.posts}>
-                    <li>
-                        <Posts content=" I’m Working in figma designing a new website that shows all my tweets!." date="2021-09-28" />
-                    </li>
-                    <li>
-                        <Posts content=" I’m Working in figma designing a new website that shows all my tweets!." date="2021-09-28" />
-                    </li>
-                    <li>
-                        <Posts content=" I’m Working in figma designing a new website that shows all my tweets!." date="2021-09-28" />
-                    </li>
+
+                    {
+                        myPosts.map((post) => {
+                            const { Content, date, id } = post;
+                            return (
+                                <li key={id}>
+                                    <Posts content={Content} date={new Intl.DateTimeFormat('en-US', {
+                                        dateStyle: 'short',
+                                        timeStyle: 'short'
+                                    }).format(new Date(date))} />
+                                </li>
+                            )
+                        })
+                    }
+
                 </ul>
 
 
@@ -37,3 +61,4 @@ export default function Home() {
         </div>
     );
 }
+
