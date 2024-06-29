@@ -3,8 +3,8 @@ import styles from "./page.module.scss";
 import Head from "next/head";
 import Posts from "../components/Post";
 import Bio from "../components/Bio/Bio";
+import PostForm from "../components/PostForm";
 import React from "react";
-
 
 
 export default function Home({ posts }) {
@@ -56,7 +56,7 @@ export default function Home({ posts }) {
 
                 </ul>
 
-
+                <PostForm />
             </main>
         </div>
     );
