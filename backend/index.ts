@@ -1,12 +1,28 @@
-console.log('Hello World!');
+type Sats = number;
+type SatsPerVByte = Sats;
+type Transaction = {
+    inputs: number;
+    outputs: number;
+    witness: string;
+}
 
-let leng: number = 36; // Number
-let width = 5; // Number
+function calculateTxFee(tx: Transaction, feeRate: SatsPerVByte): Sats {
+    const {inputs, outputs, witness } = tx;
+    const inputWeight = inputs * 4;
+    const outputWeight = outputs * 4;
+    const witnessWeight = witness.length / 2;
 
-let area = leng * width;
-let perimeter = 2 * (leng + width);
+    return ( inputWeight + outputWeight + witnessWeight) * feeRate;
+}
 
-console.log("Length: " + leng);
-console.log("Width: " + width);
-console.log(area); // 80
-console.log(perimeter); // 42
+const transaction: Transaction = {
+    inputs: 3,
+    outputs: 2,
+    witness: "I can spend this money"
+}
+
+
+const feeRate: SatsPerVByte = 50;
+const txFee = calculateTxFee(transaction, feeRate)
+
+console.log(`The transaction: ${calculateTxFee(transaction, feeRate) } sats`)
