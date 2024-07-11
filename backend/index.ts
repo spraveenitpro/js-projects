@@ -25,4 +25,4 @@ const transaction: Transaction = {
 const feeRate: SatsPerVByte = 50;
 const txFee = calculateTxFee(transaction, feeRate)
 
-console.log(`The transaction: ${calculateTxFee(transaction, feeRate) } sats`)
+console.log(`The transaction : ${calculateTxFee(transaction, feeRate) } sats`)
