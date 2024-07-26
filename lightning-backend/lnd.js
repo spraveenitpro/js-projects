@@ -77,7 +77,7 @@ const invoiceEventStream = async () => {
 			}
 		})
 		.on("error", (err) => {
-			console.log(err);
+			console.log(err)
 		});
 };
 
