@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
 // GET user by username
 
 router.get("/:username", (req, res) => {
-    const id = req.params.id;
+    const id = req.params.username;
     console.log(id);
     res.status(200).json({ message: "Hello World!" });
 })
