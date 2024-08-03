@@ -25,7 +25,7 @@ router.post("/register", (req, res) => {
 
 // POST a user to login
 
-router.post("/register", (req, res) => {
+router.post("/login", (req, res) => {
     const user = req.body;
     console.log(user);
     res.status(200).json({ message: "Hello World!" });
