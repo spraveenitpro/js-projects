@@ -1,14 +1,18 @@
-
+const dotenv = require("dotenv");
 const express = require('express');
-const helmet = require('helmet')
-const morgan = require('morgan')
-const cors = require('cors')
-const ratelimit = require('express-rate-limit')
+const helmet = require('helmet');
+const morgan = require('morgan');
+const cors = require('cors');
+const ratelimit = require('express-rate-limit');
 
 // Import new routers
 
+dotenv.config()
 const usersRouter = require("./routers/usersRouter");
 const lightningRouter = require("./routers/lightningRouter");
+
+const PORT = process.env.PORT || 5500;
+
 
 
 const server = express();
@@ -38,7 +42,6 @@ server.get("/", (req, res) => {
 server.use("/users", usersRouter);
 server.use("/lightning", lightningRouter);
 
-const PORT = process.env.PORT || 5500;
 
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

@@ -28,10 +28,36 @@ router.post("/register", (req, res) => {
 
 // POST a user to login
 
+// router.post("/login", (req, res) => {
+//     const user = req.body;
+//     console.log(user);
+//     res.status(200).json({ message: "Hello World!" });
+// })
+
 router.post("/login", (req, res) => {
-    const user = req.body;
-    console.log(user);
-    res.status(200).json({ message: "Hello World!" });
+    const { username, password } = req.body;
+
+    const DBuser = {
+        username: "test",
+        password: "pass1",
+    }
+
+    const hashedPassword = bcrypt.hashSync(DBuser.password, 14);
+    // Check if the user exists and the password matches using bcrypt
+    if (DBuser && bcrypt.compareSync(password, hashedPassword)) {
+        // Generate a JSON Web Token (JWT) for the user
+        const token = generateToken(DBuser);
+        // Send a success response with the JWT and user data
+        res
+            .status(200)
+            .json({ message: `Welcome ${DBuser.username}!`, token, DBuser });
+    } else {
+        // Send an error response if the credentials are invalid
+        res.status(401).json({ message: "Invalid credentials" });
+    }
+
+
+
 })
 
 // PUT a user to update them by id
