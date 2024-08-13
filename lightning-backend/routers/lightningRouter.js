@@ -1,6 +1,8 @@
 
 const router = require("express").Router();
 const authenticate = require("../routers/middleware/authenticate");
+const authenticateAdmin = require("../routers/middleware/authenticateAdmin");
+
 
 // GET lightning wallet balance
 
@@ -23,13 +25,14 @@ router.post("/invoice", authenticate, (req, res) => {
     res.status(200).json({ message: "I'm alive!" });
 });
 
-
 // POST an invoice to pay
 
-router.post("/pay", (req, res) => {
+router.post("/pay", authenticateAdmin, (req, res) => {
     const { payment_request } = req.body;
+
     console.log(payment_request);
-    res.status(200).json({ message: "Hello World" });
+
+    res.status(200).json({ message: "I'm alive!" });
 });
 
 module.exports = router;
