@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const cors = require('cors');
 const ratelimit = require('express-rate-limit');
+const { connect } = require("./lnd");
 
 // Import new routers
 
@@ -33,6 +34,7 @@ server.use(
 
 
 server.use(express.json());
+connect();
 
 server.get("/", (req, res) => {
     res.status(200).json({ message: "Hello World!" });
