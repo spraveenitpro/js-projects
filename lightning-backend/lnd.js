@@ -63,9 +63,10 @@ const invoiceEventStream = async () => {
 		settle_index: 0,
 	})
 		.on("data", async (data) => {
+			console.log('Invoice change', data);
 			if (data.settled) {
 				// Check if the invoice exists in the database
-				const existingInvoice = False;
+				const existingInvoice = false;
 
 				// If the invoice exists, update it in the database
 				if (existingInvoice) {
