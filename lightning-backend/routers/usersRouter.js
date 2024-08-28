@@ -95,48 +95,76 @@ router.post("/register", (req, res) => {
 //     res.status(200).json({ message: "Hello World!" });
 // })
 
+// POST a user to login
 router.post("/login", (req, res) => {
+	// Extract the 'username' and 'password' fields from the request body. These are provided by the client when they make the request.
 	const { username, password } = req.body;
 
-	const DBuser = {
-		username: "test",
-		password: "pass1",
-	}
+	// Call the 'findByUsername' method from our User model. This method retrieves the first user record from the database that matches the provided username.
+	User.findByUsername(username)
+		.then((user) => {
+			// Check if a user was found and if the provided password, when hashed, matches the hashed password stored in the database.
+			if (user && bcrypt.compareSync(password, user.password)) {
+				// If both conditions are met, the login is successful. We then generate a token for the user. This token will be used for subsequent authenticated requests.
+				const token = generateToken(user);
+				// Respond with a status of 200 (OK), a welcome message, the generated token, and user information.
+				res
+					.status(200)
+					.json({ message: `Welcome ${user.username}!`, token, user });
+			} else {
+				// If the user wasn't found or the password doesn't match, respond with a status of 401 (Unauthorized) and a message indicating the credentials were invalid.
+				res.status(401).json({ message: "Invalid credentials" });
+			}
+		})
+		.catch((err) => {
+			// If an error occurs during the process, log the error and respond with a status of 500 (Internal Server Error) and the error.
+			console.log(err);
+			res.status(500).json({ error: err });
+		});
+});
 
-	const hashedPassword = bcrypt.hashSync(DBuser.password, 14);
-	// Check if the user exists and the password matches using bcrypt
-	if (DBuser && bcrypt.compareSync(password, hashedPassword)) {
-		// Generate a JSON Web Token (JWT) for the user
-		const token = generateToken(DBuser);
-		// Send a success response with the JWT and user data
-		res
-			.status(200)
-			.json({ message: `Welcome ${DBuser.username}!`, token, DBuser });
-	} else {
-		// Send an error response if the credentials are invalid
-		res.status(401).json({ message: "Invalid credentials" });
-	}
-
-
-
-})
 
 // PUT a user to update them by id
 
-router.put("/:id", (req, res) => {
-	const id = req.params.id;
-	const user = req.body;
-	console.log(id, user);
-	res.status(200).json({ message: "Hello World!" });
-})
+// PUT a user to update them
+// The 'authenticateAdmin' middleware function is used to ensure that only the admin is authorized to update the user.
+router.put("/:id", authenticateAdmin, (req, res) => {
+	// Call the 'update' method from our User model with the provided id and body of the request.
+	// The 'update' method will update the user record in the database that matches the provided id with the data in the request body.
+	User.update(req.params.id, req.body)
+		.then((user) => {
+			// If the promise resolves (i.e., the operation was successful), we send back a response with a status of 200 (OK)
+			// and the updated user record from the database.
+			res.status(200).json(user);
+		})
+		.catch((err) => {
+			// If the promise is rejected (i.e., the operation fails), we send back a response with a status of 500 (Internal Server Error)
+			// and the error that occurred. This might be due to a database issue, a network issue, etc.
+			res.status(500).json(err);
+		});
+});
+
 
 // DELETE a user by id
 
-router.delete("/:id", (req, res) => {
-	const id = req.params.id;
-	console.log(id);
-	res.status(200).json({ message: "Hello World!" });
-})
+// DELETE a user
+router.delete("/:id", authenticateAdmin, (req, res) => {
+	// Before running the delete operation, the `authenticateAdmin` middleware function is run.
+	// This function checks whether the user making the request has the appropriate admin privileges.
+
+	// Then we call the 'delete' method from our User model, passing in the user id extracted from the route parameters.
+	User.delete(req.params.id)
+		.then((user) => {
+			// If the promise resolves (i.e., the operation was successful), we send back a response with a status of 200 (OK)
+			// and the user that was deleted from the database.
+			res.status(200).json(user);
+		})
+		.catch((err) => {
+			// If the promise is rejected (i.e., the operation fails), we send back a response with a status of 500 (Internal Server Error)
+			// and the error that occurred. This might be due to a database issue, a network issue, etc.
+			res.status(500).json(err);
+		});
+});
 
 // function to generate JSON web token for given user
 
