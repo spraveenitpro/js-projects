@@ -73,6 +73,7 @@ router.post("/invoice", authenticate, (req, res) => {
 		.catch((err) => {
 			// If the promise is rejected (i.e., the operation fails), we send back a response with a status of 500 (Internal Server Error)
 			// and the error that occurred. This could be due to a database issue, a network issue, etc.
+			console.error(err);
 			res.status(500).json(err);
 		});
 });
