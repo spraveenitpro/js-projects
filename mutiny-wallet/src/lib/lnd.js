@@ -30,6 +30,7 @@ export const getInfo = async () => {
 export const getBalances = async () => {
     try {
         const response = await lnd.get("/v1/balance/channels");
+        console.log(response);
         return response.data;
     } catch (error) {
         console.error(
