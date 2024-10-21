@@ -1,12 +1,13 @@
 import  { useEffect, useState } from "react";
-import { getInfo, getBalances } from "./lib/lnd";
+import { getInfo, getBalances, createInvoice } from "./lib/lnd";
 import "./App.css";
 
 export default function App() {
    const [info, setInfo] = useState({});
    const [lightningBalance, setLightningBalance] = useState(null);
    const [inbound, setInbound] = useState(null);
-
+   const [invoice, setInvoice] = useState(null);
+   const [invoiceAmount, setInvoiceAmount] = useState(0);
    const fetchInfo = async () => {
        try {
            const fetchedInfo = await getInfo();
@@ -27,6 +28,16 @@ export default function App() {
            console.error("Error fetching Lightning balances:", error);
        }
    };
+
+   const handleCreateInvoice = async () => {
+    try {
+        const createdInvoice = await createInvoice(parseInt(invoiceAmount));
+        console.log(createdInvoice);
+        setInvoice(createdInvoice);
+    } catch(error) {
+        console.error("Error creating Invoice: ", error)
+    }
+   }
 
    useEffect(() => {
        fetchInfo();
@@ -58,6 +69,26 @@ export default function App() {
                    <p>Inbound: {inbound} sats</p>
                </div>
            )}
+
+            {info && (
+               <div>
+                   <h2>Create Invoice</h2>
+                   <input
+                       type="number"
+                       value={invoiceAmount}
+                       onChange={(e) => setInvoiceAmount(e.target.value)}
+                       placeholder="Amount in sats"
+                   />
+                   <button onClick={handleCreateInvoice}>Create Invoice</button>
+               </div>
+           )}
+           {invoice && (
+               <div>
+                   <h2>Created Invoice</h2>
+                   <p>Payment Request: {invoice.payment_request}</p>
+               </div>
+           )}
+
        </main>
    );
 }

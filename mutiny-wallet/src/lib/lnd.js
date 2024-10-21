@@ -40,3 +40,20 @@ export const getBalances = async () => {
         throw error;
     }
 };
+
+// Add a method for creating invoice from API in lnd.js
+export const createInvoice = async (amount) => {
+    try {
+        const response = await lnd.post("/v1/invoices", {
+            value: amount,
+        });
+        console.log("lnd response", response);
+        return response.data;
+    } catch (error) {
+        console.error(
+            "Error creating invoice:",
+            error.response ? error.response.data : error.message,
+        );
+        throw error;
+    }
+};
