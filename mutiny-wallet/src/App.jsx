@@ -1,5 +1,6 @@
 import  { useEffect, useState } from "react";
-import { getInfo, getBalances, createInvoice } from "./lib/lnd";
+import { getInfo, getBalances, createInvoice, payInvoice } from "./lib/lnd";
+import { getBitcoinCoreStats } from "./lib/bitcoin";
 import "./App.css";
 
 export default function App() {
@@ -8,6 +9,21 @@ export default function App() {
    const [inbound, setInbound] = useState(null);
    const [invoice, setInvoice] = useState(null);
    const [invoiceAmount, setInvoiceAmount] = useState(0);
+   const [paymentRequest, setPaymentRequest] = useState("");
+   const [paymentResponse, setPaymentResponse] = useState(null);
+   const [bitcoinCoreStats, setBitcoinCoreStats] = useState(null);
+
+   const fetchBitcoinCoreStats = async () => {
+    try {
+        const fetchedBitcoinCoreStats = await getBitcoinCoreStats();
+        console.log("bitcoinCoreStats", fetchedBitcoinCoreStats);
+        setBitcoinCoreStats(fetchedBitcoinCoreStats);
+    } catch (error) {
+        console.error("Error fetching Bitcoin Core stats:", error);
+    }
+};
+
+
    const fetchInfo = async () => {
        try {
            const fetchedInfo = await getInfo();
@@ -39,8 +55,30 @@ export default function App() {
     }
    }
 
+   const handlePayInvoice = async () => {
+    try {
+        const paymentResponse = await payInvoice(paymentRequest);
+        console.log(paymentResponse);
+        if (paymentResponse.payment_preimage) {
+            setPaymentResponse(
+                `Payment successful! Payment preimage: ${paymentResponse.payment_preimage}`
+            );
+        } else {
+            setPaymentResponse(
+                `Payment failed. Error: ${paymentResponse.payment_error}`
+            );
+        }
+    } catch (error) {
+        console.error("Error paying invoice:", error);
+        setPaymentResponse(`Error: ${error.message}`);
+    }
+};
+
+
    useEffect(() => {
        fetchInfo();
+       fetchBitcoinCoreStats();
+
 
        // Set up polling for balances and Bitcoin Core stats
        const pollInterval = setInterval(() => {
@@ -88,6 +126,36 @@ export default function App() {
                    <p>Payment Request: {invoice.payment_request}</p>
                </div>
            )}
+
+{info && (
+               <div>
+                   <h2>Pay Invoice</h2>
+                   <input
+                       type="text"
+                       value={paymentRequest}
+                       onChange={(e) => setPaymentRequest(e.target.value)}
+                       placeholder="Payment Request"
+                   />
+                   <button onClick={handlePayInvoice}>Pay Invoice</button>
+               </div>
+           )}
+           {paymentResponse && (
+               <div>
+                   <p>{paymentResponse}</p>
+               </div>
+           )}
+
+{bitcoinCoreStats && (
+               <div>
+                   <h2>Bitcoin Core Stats</h2>
+                   <p>Block Height: {bitcoinCoreStats.block_height}</p>
+                   <p>Network Difficulty: {bitcoinCoreStats.difficulty}</p>
+                   <p>Mempool Size: {bitcoinCoreStats.mempool_size} transactions</p>
+                   <p>Mempool Size: {bitcoinCoreStats.mempool_bytes} bytes</p>
+               </div>
+           )}
+
+
 
        </main>
    );

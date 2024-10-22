@@ -57,3 +57,24 @@ export const createInvoice = async (amount) => {
         throw error;
     }
 };
+
+// Pay an invoice
+
+export const payInvoice = async (paymentRequest) => {
+    try {
+        const response = await lnd.post("/v1/channels/transactions", {
+            payment_request: paymentRequest,
+            fee_limit: {
+                fixed: 1000
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error(
+            "Error paying invoice:",
+            error.response ? error.response.data : error.message,
+        );
+        throw error;
+
+    }
+}
