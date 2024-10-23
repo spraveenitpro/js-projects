@@ -149,6 +149,7 @@
         var response = JSON.parse( response );
         console.log("Response: 🌶️",response);
         $( `.paste_invoice` ).innerHTML = $( `.paste_invoice` ).innerHTML + JSON.stringify( response );
+        app()
     }
 
 
