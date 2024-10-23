@@ -6,6 +6,51 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Pleb Wallet</title>
     <link rel="stylesheet" href="index.css">
+
+  </head>
+  <body>
+	<header>
+        <h1>Pleb Wallet</h1>
+    </header>
+    <main>
+        <div class="buttons">
+            <button>Send</button>
+            <button>Receive</button>
+        </div>
+        <div style="background-color: white; padding: 20px; display: none;" align="center" class="paste_invoice">
+        	<p style="font-family: Helvetica, sans-serif; font-size: 1.25em;">Paste an invoice</p>
+        	<p><input class="invoice_to_pay" style="font-size: 1.15em;"></p>
+        	<p><button type="button" onclick="submitInvoiceToPay( $( `.invoice_to_pay` ).value )" style="font-size: 1.15em;">Submit</button></p>
+    	</div>
+    	<div style="background-color: white; padding: 20px; display: none;" align="center" class="create_invoice">
+        	<p style="font-family: Helvetica, sans-serif; font-size: 1.25em;">Enter an amount</p>
+        	<p><input class="amount_of_new_invoice" style="font-size: 1.15em;"></p>
+        	<p><button type="button" onclick="getInvoice( $( `.amount_of_new_invoice` ).value )" style="font-size: 1.15em;">Submit</button></p>
+    	</div>
+
+        <div class="row">
+            <div class="balance-card">
+                <h2>Balance</h2>
+                <p></p>
+            </div>
+            <div class="balance-card">
+                <h2>Price</h2>
+                <p></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="row-item">
+                <h3>Transactions</h3>
+
+            </div>
+            <div class="row-item">
+                <img src="./BTCUSD.png" />
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>Made by plebs, for plebs.</p>
+    </footer>
     <script src="https://mempool.space/mempool.js"></script>
     <script>
         const fetchPrices = async() => {
@@ -23,6 +68,17 @@
         function getData( url, apikey, content_type ) {
             return new Promise( function( resolve, reject ) {
                 var xhttp = new XMLHttpRequest();
+
+                xhttp.onreadystatechange = function() {
+            if (this.readyState == 4) {
+                if (this.status >= 200 && this.status < 300) {
+                    resolve(this.responseText);
+                } else {
+                    reject(new Error(`Request failed with status ${this.status}`));
+                }
+            }
+            };
+
                 xhttp.open( "GET", url, true );
                 if ( apikey ) {
                     xhttp.setRequestHeader( "X-Api-Key", apikey );
@@ -34,61 +90,71 @@
             });
         }
 
+        function postJson( url, apikey, content_type, json ) {
+        return new Promise( function( resolve, reject ) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if ( this.readyState == 4 && ( this.status >= 200 && this.status < 300 ) ) {
+                    resolve( xhttp.responseText );
+                };
+            }
+            xhttp.open( `POST`, url, true );
+            if ( apikey ) {xhttp.setRequestHeader( `X-Api-Key`, apikey );}
+            if ( content_type ) {
+                xhttp.setRequestHeader( `Content-Type`, content_type );
+            }
+            xhttp.send( json );
+    	});
+}
+
+
 
         async function getLnbitsBalance() {
-            var data = await getData( "http://127.0.0.1:5000/api/v1/wallet", "77098f677c4f4eceb42ceea44061d072" );
-            var json = JSON.parse( data );
-            var balance = Number( json[ "balance" ] ) / 1000;
+            try {
+                var data = await getData( "http://127.0.0.1:5000/api/v1/wallet", "77098f677c4f4eceb42ceea44061d072" );
+                var json = JSON.parse( data );
+                var balance = Number( json[ "balance" ] ) / 1000;
 
-            console.log(data);
-            return balance;
+                console.log(balance);
+                return balance;
+            } catch ( error ) {
+                console.error("Error fetching balance!");
+            }
         }
 
+        async function getLnbitsTransactions() {
+            var data = await getData( `http://127.0.0.1:5000/api/v1/payments`, `77098f677c4f4eceb42ceea44061d072`, `application/json` );
+            var json = JSON.parse( data );
+            var transactions = json;
+            return transactions;
+        }
+
+        async function getInvoice( amount ) {
+        var json = {}
+        json[ `out` ] = false;
+        json[ `amount` ] = amount;
+        json[ `memo` ] = "LNBits";
+        var response = await postJson( `http://127.0.0.1:5000/api/v1/payments`, `77098f677c4f4eceb42ceea44061d072`, `application/json`, JSON.stringify( json ) );
+        var response = JSON.parse( response );
+        $( `.create_invoice` ).innerHTML = $( `.create_invoice` ).innerHTML + response[ `payment_request` ];
+    }
+
+    async function submitInvoiceToPay( invoice ) {
+        console.log("Running submitInvoiceToPay function 😄");
+        if ( !confirm( `Are you sure you want to pay this invoice? ${invoice}` ) ) return;
+        var json = {}
+        json[ "out" ] = true;
+        json[ "bolt11" ] = invoice;
+        var response = await postJson( "http://127.0.0.1:5000/api/v1/payments", "600af03560e744ababf348486b9aab1b", "application/json", JSON.stringify( json ) );
+        var response = JSON.parse( response );
+        console.log("Response: 🌶️",response);
+        $( `.paste_invoice` ).innerHTML = $( `.paste_invoice` ).innerHTML + JSON.stringify( response );
+    }
+
+
+
+
     </script>
-  </head>
-  <body>
-	<header>
-        <h1>Pleb Wallet</h1>
-    </header>
-    <main>
-        <div class="buttons">
-            <button onclick="alert('Send!')">Send</button>
-            <button onclick="alert('Receive!')">Receive</button>
-        </div>
-        <div class="row">
-            <div class="balance-card">
-                <h2>Balance</h2>
-                <p>897900 sats</p>
-            </div>
-            <div class="balance-card">
-                <h2>Price</h2>
-                <p></p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="row-item">
-                <h3>Transactions</h3>
-                <p class="transaction">Sent to bc1xxxxxxxxxxxxxxxx</p>
-                <p class="transaction-amount">-2200 sats</p>
-                <p class="transaction">Received from bc1xxxxxxxxxxxxxxxx</p>
-                <p class="transaction-amount">+100 sats</p>
-                <p class="transaction">Received to bc1xxxxxxxxxxxxxxxx</p>
-                <p class="transaction-amount">+900000 sats</p>
-                <p class="transaction">Sent to bc1xxxxxxxxxxxxxxxx</p>
-                <p class="transaction-amount">-2200 sats</p>
-                <p class="transaction">Received from bc1xxxxxxxxxxxxxxxx</p>
-                <p class="transaction-amount">+100 sats</p>
-                <p class="transaction">Received to bc1xxxxxxxxxxxxxxxx</p>
-                <p class="transaction-amount">+900000 sats</p>
-            </div>
-            <div class="row-item">
-                <img src="./BTCUSD.png" />
-            </div>
-        </div>
-    </main>
-    <footer>
-        <p>Made by plebs, for plebs.</p>
-    </footer>
     <script>
 
 
@@ -99,13 +165,47 @@
         if (price) {
             const formattedPrice = Number(price).toLocaleString();
             $$('.balance-card p')[1].innerHTML = `$${formattedPrice}`;
-            setTimeout(function() {app();}, 10000)
+
         }
-        await getLnbitsBalance()
         var balance = await getLnbitsBalance();
+        console.log(balance);
         $$('.balance-card p')[0].innerHTML = balance + ' sats';
+
+        var transactions = await getLnbitsTransactions();
+        transactions.forEach( function(tx) {
+            var amount = Math.floor( Number( tx["amount"]) /1000);
+            if (amount > 0 && !$( `p[data-checking-id="${tx[ "checking_id" ]}"]` ) && !tx[ "pending" ] ) {
+                $( `.row-item` ).innerHTML = $( `.row-item` ).innerHTML + `<p class="transaction" data-checking-id="${tx[ "checking_id" ]}">Received with <span title="${tx[ "bolt11" ]}">${tx[ "bolt11" ].substring( 0, 25 )}...</span></p><p class="transaction-amount">+${amount} sats</p>`;
+
+            }
+            if ( amount < 0 && !$( `p[data-checking-id="${tx[ "checking_id" ]}"]` ) && ( tx[ "preimage" ] != "0000000000000000000000000000000000000000000000000000000000000000" || ( !tx[ "pending" ] && tx[ "checking_id" ].startsWith( "internal" ) ) ) ) {
+        if ( tx[ "fee" ] ) {amount = amount + ( tx[ "fee" ] / 1000 );}
+        $( `.row-item` ).innerHTML = $( `.row-item` ).innerHTML + `<p class="transaction" data-checking-id="${tx[ "checking_id" ]}">Sent with <span title="${tx[ "bolt11" ]}">${tx[ "bolt11" ].substring( 0, 25 )}...</span></p><p class="transaction-amount">${amount} sats</p>`;
     }
+
+
+        })
+        console.log(transactions);
+    }
+    $$(`button`)[ 0 ].onclick = function() {
+    if ( $( `.paste_invoice` ).style.display != `block` ) {
+        $( `.paste_invoice` ).style.display = `block`;
+    } else {
+        $( `.paste_invoice` ).style.display = `none`;
+    }
+    $( `.invoice_to_pay` ).value = "";
+}
+$$(`button`)[ 1 ].onclick = function() {
+    if ( $( `.create_invoice` ).style.display != `block` ) {
+        $( `.create_invoice` ).style.display = `block`;
+    } else {
+        $( `.create_invoice` ).style.display = `none`;
+    }
+    $( `.amount_of_new_invoice` ).value = "";
+}
+
     app();
+    setTimeout(function() {app();}, 10000)
 
 
 
