@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Pleb Wallet</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://mempool.space/mempool.js"></script>
+    <script>
+        const fetchPrices = async() => {
+            try {
+                const response = await fetch('https://mempool.space/api/v1/prices');
+                const data = await response.json();
+                console.log(data.USD);
+                return data.USD;
+            } catch (error) {
+                console.error("Error fetching price!");
+            }
+
+        }
+
+        function getData( url, apikey, content_type ) {
+            return new Promise( function( resolve, reject ) {
+                var xhttp = new XMLHttpRequest();
+                xhttp.open( "GET", url, true );
+                if ( apikey ) {
+                    xhttp.setRequestHeader( "X-Api-Key", apikey );
+                }
+                if ( content_type ) {
+                    xhttp.setRequestHeader( "Content-Type", content_type );
+                }
+                xhttp.send();
+            });
+        }
+
+
+        async function getLnbitsBalance() {
+            var data = await getData( "http://127.0.0.1:5000/api/v1/wallet", "77098f677c4f4eceb42ceea44061d072" );
+            var json = JSON.parse( data );
+            var balance = Number( json[ "balance" ] ) / 1000;
+
+            console.log(data);
+            return balance;
+        }
+
+    </script>
+  </head>
+  <body>
+	<header>
+        <h1>Pleb Wallet</h1>
+    </header>
+    <main>
+        <div class="buttons">
+            <button onclick="alert('Send!')">Send</button>
+            <button onclick="alert('Receive!')">Receive</button>
+        </div>
+        <div class="row">
+            <div class="balance-card">
+                <h2>Balance</h2>
+                <p>897900 sats</p>
+            </div>
+            <div class="balance-card">
+                <h2>Price</h2>
+                <p></p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="row-item">
+                <h3>Transactions</h3>
+                <p class="transaction">Sent to bc1xxxxxxxxxxxxxxxx</p>
+                <p class="transaction-amount">-2200 sats</p>
+                <p class="transaction">Received from bc1xxxxxxxxxxxxxxxx</p>
+                <p class="transaction-amount">+100 sats</p>
+                <p class="transaction">Received to bc1xxxxxxxxxxxxxxxx</p>
+                <p class="transaction-amount">+900000 sats</p>
+                <p class="transaction">Sent to bc1xxxxxxxxxxxxxxxx</p>
+                <p class="transaction-amount">-2200 sats</p>
+                <p class="transaction">Received from bc1xxxxxxxxxxxxxxxx</p>
+                <p class="transaction-amount">+100 sats</p>
+                <p class="transaction">Received to bc1xxxxxxxxxxxxxxxx</p>
+                <p class="transaction-amount">+900000 sats</p>
+            </div>
+            <div class="row-item">
+                <img src="./BTCUSD.png" />
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>Made by plebs, for plebs.</p>
+    </footer>
+    <script>
+
+
+        var $ = document.querySelector.bind(document);
+        var $$ = document.querySelectorAll.bind(document);
+        async function app() {
+        const price = await fetchPrices();
+        if (price) {
+            const formattedPrice = Number(price).toLocaleString();
+            $$('.balance-card p')[1].innerHTML = `$${formattedPrice}`;
+            setTimeout(function() {app();}, 10000)
+        }
+        await getLnbitsBalance()
+        var balance = await getLnbitsBalance();
+        $$('.balance-card p')[0].innerHTML = balance + ' sats';
+    }
+    app();
+
+
+
+
+
+    </script>
+</body>
+</html>
